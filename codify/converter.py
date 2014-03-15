@@ -31,6 +31,9 @@ class Assign(object):
         self.target = target
         self.value = value
 
+    def __eq__(self, b):
+        return isinstance(b, Assign) and self.target == b.target and self.value == b.value
+
     def __str__(self):
         return "%s = %s" % (self.target, self.value)
 
@@ -38,12 +41,19 @@ class Return(object):
     def __init__(self, value):
         self.value = value
 
+    def __eq__(self, b):
+        return isinstance(b, Return) and all(self.value == b.value)
+
     def __str__(self):
         return "return %s" % self.value
 
 class Block(object):
     def __init__(self, lines):
         self.lines = lines
+
+    def __eq__(self, b):
+        return (isinstance(b, Block) and len(self.lines) == len(b.lines) and
+                all([la == lb for la, lb in zip(self.lines, b.lines)]))
 
     def __str__(self):
         return "\n".join([str(line) for line in self.lines])
